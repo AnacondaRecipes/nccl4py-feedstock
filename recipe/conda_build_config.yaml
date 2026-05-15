@@ -1,0 +1,8 @@
+arm_variant_type:   # [linux and aarch64]
+  - sbsa            # [linux and aarch64]
+
+# Build exactly one CUDA variant (13.*).
+# Combined with the 'ignore_run_exports', the resulting package serves
+# both CUDA 12 and CUDA 13 runtimes, so there's no value in duplicating the build.
+cuda_compiler_version:
+  - 13.0
