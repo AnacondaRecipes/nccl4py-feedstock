@@ -37,26 +37,29 @@ requirements:
     - python
     - pip
     - setuptools >=77.0.3
-    - cython >=0.29.24
+    - cython >=3.1
     - cuda-version {{ cuda_compiler_version }}.*
     - cuda-cudart-dev
   run:
     - python
     - numpy
     - packaging
-    - cuda-core >=0.5.0,<1
-    - cuda-pathfinder >=1.1,<2
+    - typing_extensions  # [py<313]
+    - cuda-core >=1.0,<2.0a0
+    - cuda-pathfinder >=1.5.4,<2.0a0
     - cuda-bindings
     - cuda-version >=12,<14.0a0
-    # nccl_linux.pyx was automatically generated against NCCL 2.30.0
-    # See: bindings/nccl4py/nccl/bindings/_internal/nccl_linux.pyx
-    - nccl >=2.30,<3
+    # See "bindings/nccl4py/nccl/bindings/_internal/nccl_linux.pyx" file
+    # for the minimum required NCCL version
+    - nccl >=2.30,<3.0a0
 
 test:
   imports:
     - nccl
     - nccl.bindings
     - nccl.core
+    # Requires "nccl_ep" plugin: https://github.com/NVIDIA/nccl/tree/master/contrib/nccl_ep
+    #- nccl.ep
   requires:
     - pip
   commands:
