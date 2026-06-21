@@ -1,5 +1,5 @@
 {% set name = "nccl4py" %}
-{% set version = "0.2.0" %}
+{% set version = "0.3.1" %}
 
 package:
   name: {{ name }}
@@ -10,7 +10,7 @@ source:
   # NVIDIA/nccl repository; the tarball extracts to `nccl-nccl4py-vX.Y.Z/`
   # with the Python package at `nccl4py/` in that root.
   url: https://github.com/NVIDIA/nccl/archive/refs/tags/nccl4py-v{{ version }}.tar.gz
-  sha256: 190f099968bc6962ca401f0b0f8dd01dbc8f93d2ed8889380f69f98470813c8b
+  sha256: 71112c0730d221a4a93fd91714e3d6bfb5beaa8d24c7904b1437caab8ef141e7
 
 build:
   number: 0
