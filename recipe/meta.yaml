@@ -1,5 +1,5 @@
 {% set name = "nccl4py" %}
-{% set version = "0.3.1" %}
+{% set version = "0.4.1" %}
 
 package:
   name: {{ name }}
@@ -10,7 +10,7 @@ source:
   # NVIDIA/nccl repository; the tarball extracts to `nccl-nccl4py-vX.Y.Z/`
   # with the Python package at `nccl4py/` in that root.
   url: https://github.com/NVIDIA/nccl/archive/refs/tags/nccl4py-v{{ version }}.tar.gz
-  sha256: 71112c0730d221a4a93fd91714e3d6bfb5beaa8d24c7904b1437caab8ef141e7
+  sha256: ad64f9df92c2535e3089639b195cc055693f7bf8ce140b7a8555dc509817119a
 
 build:
   number: 0
@@ -44,7 +44,6 @@ requirements:
     - python
     - numpy
     - packaging
-    - typing_extensions  # [py<313]
     - cuda-core >=1.0,<2.0a0
     - cuda-pathfinder >=1.5.4,<2.0a0
     - cuda-bindings
@@ -52,6 +51,7 @@ requirements:
     # See "bindings/nccl4py/nccl/bindings/_internal/nccl_linux.pyx" file
     # for the minimum required NCCL version
     - nccl >=2.30,<3.0a0
+    - nvidia-cutlass-dsl >=4.6,<5
 
 test:
   imports:
@@ -64,7 +64,7 @@ test:
     - pip
   commands:
     - pip check
-    - python -c "import nccl, nccl.bindings, nccl.core; print(nccl.__version__)"
+    - python -c "import nccl, nccl.bindings, nccl.core; print(nccl.core.__version__)"
 
 about:
   home: https://developer.nvidia.com/nccl
