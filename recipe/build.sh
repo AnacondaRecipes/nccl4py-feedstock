@@ -1,5 +1,5 @@
 #!/bin/bash
-set -ex
+set -exo pipefail
 
 # CUDA 12+ stack places headers under a target-specific dir:
 #   $BUILD_PREFIX/targets/<arch>-linux/include/{cuda.h, cuda_runtime_api.h, ...}
