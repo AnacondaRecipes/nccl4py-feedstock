@@ -1,5 +1,5 @@
 {% set name = "nccl4py" %}
-{% set version = "0.4.1" %}
+{% set version = "0.5.0" %}
 
 package:
   name: {{ name }}
@@ -10,7 +10,7 @@ source:
   # NVIDIA/nccl repository; the tarball extracts to `nccl-nccl4py-vX.Y.Z/`
   # with the Python package at `nccl4py/` in that root.
   url: https://github.com/NVIDIA/nccl/archive/refs/tags/nccl4py-v{{ version }}.tar.gz
-  sha256: ad64f9df92c2535e3089639b195cc055693f7bf8ce140b7a8555dc509817119a
+  sha256: 07d3448995105ecc2b2652b1cd93b31cd822446ad22da67f7564000da1d0afbb
 
 build:
   number: 0
@@ -48,9 +48,15 @@ requirements:
     - cuda-pathfinder >=1.5.4,<2.0a0
     - cuda-bindings
     - cuda-version >=12,<14.0a0
-    # See "bindings/nccl4py/nccl/bindings/_internal/nccl_linux.pyx" file
-    # for the minimum required NCCL version
-    - nccl >=2.30,<3.0a0
+    # Anaconda: nccl4py 0.5.0's generated bindings are code-generated
+    # against NCCL 2.31.2 and dlsym the 2.31-only APIs lazily, so a 2.30
+    # runtime still imports and runs plain collectives.
+    # See: bindings/nccl4py/nccl/bindings/_internal/nccl_linux.pyx
+    # Upstream v0.5.0 documents "NCCL 2.30.7 or newer" as its baseline.
+    # conda-forge keeps >=2.30, but Anaconda also ships nccl 2.30.4.1,
+    # older than that baseline, so require 2.30.7 as lower bound.
+    # See: bindings/nccl4py/examples/cute/README.md; 2.31.0+ for Gin barrier sessions, 2.31.1+ for ncclGinGet
+    - nccl >=2.30.7,<3.0a0
     - nvidia-cutlass-dsl >=4.6,<5
 
 test:
