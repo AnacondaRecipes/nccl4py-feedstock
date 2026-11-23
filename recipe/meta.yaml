@@ -81,9 +81,9 @@ test:
 
 about:
   home: https://developer.nvidia.com/nccl
-  license: BSD-3-Clause
+  license: Apache-2.0
   license_file: LICENSE.txt
-  license_family: BSD
+  license_family: Apache
   summary: Python bindings for NVIDIA NCCL
   description: |
     NCCL4Py provides Pythonic access to NCCL for efficient multi-GPU and
