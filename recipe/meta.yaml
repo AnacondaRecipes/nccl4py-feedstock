@@ -36,7 +36,8 @@ requirements:
   host:
     - python
     - pip
-    - setuptools >=77.0.3
+    - setuptools >=80
+    - setuptools-scm >=10.2,<11
     - cython >=3.1
     - cuda-version {{ cuda_compiler_version }}.*
     - cuda-cudart-dev
@@ -48,14 +49,18 @@ requirements:
     - cuda-pathfinder >=1.5.4,<2.0a0
     - cuda-bindings
     - cuda-version >=12,<14.0a0
-    # Anaconda: nccl4py 0.5.0's generated bindings are code-generated
-    # against NCCL 2.31.2 and dlsym the 2.31-only APIs lazily, so a 2.30
-    # runtime still imports and runs plain collectives.
-    # See: bindings/nccl4py/nccl/bindings/_internal/nccl_linux.pyx
-    # Upstream v0.5.0 documents "NCCL 2.30.7 or newer" as its baseline.
-    # conda-forge keeps >=2.30, but Anaconda also ships nccl 2.30.4.1,
-    # older than that baseline, so require 2.30.7 as lower bound.
-    # See: bindings/nccl4py/examples/cute/README.md; 2.31.0+ for Gin barrier sessions, 2.31.1+ for ncclGinGet
+    # Anaconda: require NCCL >=2.30.7.
+    # - The 0.6.0 bindings are generated against NCCL 2.32.3, but newer APIs
+    #   are dlsym'd lazily, so a 2.30.7 runtime still imports and runs plain
+    #   collectives.
+    #   See: bindings/nccl4py/nccl/bindings/_internal/nccl_linux.pyx
+    # - Upstream documents NCCL 2.30.7 as the CuTe DSL baseline.
+    #   See: bindings/nccl4py/examples/cute/README.md
+    # - Optional features need newer runtimes: 2.31.0 for the Gin
+    #   barrier-session pointer ABI, 2.31.1 for ncclGinGet, and 2.32 for the
+    #   NVLS/CFT host APIs and WindowFlag.GIN_ONLY/CFT_COUNTED.
+    # - conda-forge only needs >=2.30, but Anaconda ships nccl 2.30.4.1,
+    #   which is below upstream's baseline, hence the 2.30.7 lower bound.
     - nccl >=2.30.7,<3.0a0
     - nvidia-cutlass-dsl >=4.6,<5
 
@@ -70,7 +75,9 @@ test:
     - pip
   commands:
     - pip check
-    - python -c "import nccl, nccl.bindings, nccl.core; print(nccl.core.__version__)"
+    # Anaconda: fail if setuptools-scm could not supply the version. Without
+    # it the dist-info is named nccl4py-0.0.0 and nccl.core.__version__ lies.
+    - python -c 'import nccl, nccl.bindings, nccl.core; print(nccl.core.__version__); assert nccl.core.__version__ == "{{ version }}"'
 
 about:
   home: https://developer.nvidia.com/nccl
