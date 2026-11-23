@@ -1,5 +1,5 @@
 #!/bin/bash
-set -exo pipefail
+set -exuo pipefail
 
 # CUDA 12+ stack places headers under a target-specific dir:
 #   $BUILD_PREFIX/targets/<arch>-linux/include/{cuda.h, cuda_runtime_api.h, ...}
@@ -24,6 +24,12 @@ case "${target_platform}" in
 esac
 
 export CUDA_HOME="${BUILD_PREFIX}/${targetsDir}"
+
+# nccl4py 0.6.0 derives its version from setuptools-scm and reads it back at
+# runtime via importlib.metadata. Pin it to the package version so the
+# installed dist-info and nccl.core.__version__ always match instead of
+# falling back to 0.0.0 when no version source is available.
+export SETUPTOOLS_SCM_PRETEND_VERSION_FOR_NCCL4PY="${PKG_VERSION}"
 
 cd bindings/nccl4py
 $PYTHON -m pip install . --no-deps --no-build-isolation -vv
