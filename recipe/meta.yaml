@@ -40,7 +40,8 @@ requirements:
     - setuptools-scm >=10.2,<11
     - cython >=3.1
     - cuda-version {{ cuda_compiler_version }}.*
-    - cuda-cudart-dev
+    # cuda-version above keeps the CUDA components matched.
+    - cuda-cudart-dev  # analint: host_section_needs_exact_pinnings
   run:
     - python
     - numpy
@@ -61,7 +62,9 @@ requirements:
     #   NVLS/CFT host APIs and WindowFlag.GIN_ONLY/CFT_COUNTED.
     # - conda-forge only needs >=2.30, but Anaconda ships nccl 2.30.4.1,
     #   which is below upstream's baseline, hence the 2.30.7 lower bound.
-    - nccl >=2.30.7,<3.0a0
+    # nccl is run-only by design: it is dlopen'd at runtime, so there is no
+    # host entry to pair with it.
+    - nccl >=2.30.7,<3.0a0  # analint: cbc_dep_in_run_missing_from_host
     - nvidia-cutlass-dsl >=4.6,<5
 
 test:
